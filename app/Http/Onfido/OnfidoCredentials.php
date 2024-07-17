@@ -11,7 +11,8 @@ class OnfidoCredentials
 
         public $create_applicant_url = '/applicants',
         public $create_workflow_url = '/workflow_runs',
-        public $create_sdktoken_url = '/sdk_token'
+        public $create_sdktoken_url = '/sdk_token',
+        // public $register_webhook = '/webhooks'
     ) {
     }
 }

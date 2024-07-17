@@ -41,12 +41,12 @@ class OnfidoBL
             case 'create_workflow':
                 $url .= $this->credentials->create_workflow_url;
 
-                $expiresAt = Carbon::now()->addMinutes(30);
+                $expiresAt = Carbon::now()->addSeconds(5);
 
                 $requestParams['workflow_id'] = $this->credentials->workflow_id;
                 $requestParams['applicant_id'] = $applicant_id;
                 $requestParams['link'] = [
-                    'completed_redirect_url' => 'https://webhook.site/60b36534-5a9b-4f35-a895-371295ff2aaf',
+                    'completed_redirect_url' => route('completed'),
                     'expired_redirect_url' => route('register', ['is_expired' => true]),
                     'expires_at' => $expiresAt,
                     'language' => 'en_US',
@@ -63,6 +63,15 @@ class OnfidoBL
                 $url .= $this->credentials->create_workflow_url . '/' . $params['workflow_run_id'];
                 $method = 'get';
                 break;
+
+                // case 'register_webhook':
+                //     $url .= $this->credentials->register_webhook;
+
+                //     $requestParams['url'] = route('workflow.completed');
+                //     $requestParams['enabled'] = true;
+                //     $requestParams['events'] = [
+                //         'workflow_run.completed'
+                //     ];
         }
 
         try {

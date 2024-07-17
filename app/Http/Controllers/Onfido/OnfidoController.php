@@ -91,10 +91,19 @@ class OnfidoController extends Controller
             ->with('success', 'Workflow created successfully');
     }
 
-    public function completed()
+    public function completed(Request $request)
     {
-        info('completed');
-        return view('completed');
+        try {
+            info($request->getContent());
+            return view('completed');
+        } catch (\Exception $e) {
+            info($e->getMessage());
+        }
+    }
+
+    public function workflowCompleted()
+    {
+        return redirect()->route('completed')->with('success', 'Verification successfully completed');
     }
 
     /**
