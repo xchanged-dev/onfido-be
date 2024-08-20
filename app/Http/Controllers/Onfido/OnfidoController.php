@@ -19,8 +19,9 @@ class OnfidoController extends Controller
     {
         $onfidoBL = new OnfidoBL;
         $onfidoData = OnfidoCredential::first();
-        $workflowId = json_decode($onfidoData->workflow)->id;
-        $sdkToken = $onfidoData->sdk_token;
+        $workflowData = json_decode($onfidoData->workflow);
+        $workflowId = $workflowData->id;
+        $sdkToken = $workflowData->sdk_token;
 
         $params = ['workflow_run_id' => $workflowId];
 
@@ -40,7 +41,7 @@ class OnfidoController extends Controller
         // save applicant response in database
 
         if (!$applicantResponse['result']) {
-            info(json_encode($applicantResponse['body']));
+            info(json_encode(['applicant' => $applicantResponse['body']]));
             return redirect()
                 ->route('register')
                 ->with('error', 'Error saving applicant\'s data');
@@ -50,7 +51,8 @@ class OnfidoController extends Controller
             'applicant' => json_encode($applicantResponse['body'])
         ]);
 
-        info('success applicant creation');
+        info(json_encode(['applicant' => $applicantResponse['body']]));
+
         return redirect()
             ->route('register')
             ->with('success', 'Applicant created successfully');
@@ -66,24 +68,26 @@ class OnfidoController extends Controller
         $workflowResponse = $onfidoBL->queryAPI('create_workflow', $applicantId);
 
         if (!$workflowResponse['result']) {
-            info(json_encode($workflowResponse['body']));
+            info(json_encode(['workflow' => $workflowResponse['body']]));
             return redirect()
                 ->route('register')
                 ->with('error', 'Error fetching workflow data');
         }
+        info(json_encode(['workflow' => $workflowResponse['body']]));
 
-        $sdkTokenResponse = $onfidoBL->queryAPI('create_sdk_token', $applicantId);
+        // $sdkTokenResponse = $onfidoBL->queryAPI('create_sdk_token', $applicantId);
 
-        if (!$sdkTokenResponse['result']) {
-            info(json_encode($sdkTokenResponse['body']));
-            return redirect()
-                ->route('register')
-                ->with('error', 'Error fetching sdk token\'s data');
-        }
+        // if (!$sdkTokenResponse['result']) {
+        //     info(json_encode(['sdktoken' => $sdkTokenResponse['body']]));
+        //     return redirect()
+        //         ->route('register')
+        //         ->with('error', 'Error fetching sdk token\'s data');
+        // }
+        // info(json_encode(['sdktoken' => $sdkTokenResponse['body']]));
 
         $onfidoData->update([
             'workflow' => json_encode($workflowResponse['body']),
-            'sdk_token' => $sdkTokenResponse['body']->token
+            // 'sdk_token' => $sdkTokenResponse['body']->token
         ]);
 
         return redirect()

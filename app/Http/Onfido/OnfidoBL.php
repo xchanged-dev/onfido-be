@@ -27,7 +27,7 @@ class OnfidoBL
                 $url .= $this->credentials->create_applicant_url;
 
                 $requestParams['first_name'] = 'Jane';
-                $requestParams['last_name'] = 'Doe';
+                $requestParams['last_name'] = 'Consider';
                 $requestParams['dob'] = '1990-01-31';
                 $requestParams['address'] = [
                     'building_number' => '100',
