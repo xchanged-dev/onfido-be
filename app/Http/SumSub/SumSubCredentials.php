@@ -10,6 +10,7 @@ class SumSubCredentials
         public $secret = 'l1WW8MKZHe7lNVYNrs5U9b9Ba4s08HIY',
 
         public $create_sdktoken_url = '/resources/accessTokens',
+        public $get_applicant_data_url = '/resources/applicants'
     ) {
     }
 }

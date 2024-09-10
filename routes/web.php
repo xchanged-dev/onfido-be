@@ -28,5 +28,9 @@ Route::post('/create/workflow', [OnfidoController::class, 'create_workflow'])->n
 Route::get('/run/onfido', [OnfidoController::class, 'run'])->name('run.onfido');
 
 // SumSub
-Route::get('/sumsub/register', [SumSubController::class, 'index'])->name('sumsub.register');
+Route::get('/sumsub/register', [SumSubController::class, 'index'])->name('sumsub.index');
+Route::get('/sumsub/run', [SumSubController::class, 'run'])->name('sumsub.register');
+Route::post('/sumsub/get-applicant', [SumSubController::class, 'getApplicantData'])->name('sumsub.getApplicant');
+Route::post('/sumsub/get-applicant-verification-steps', [SumSubController::class, 'getApplicantVerificationSteps'])->name('sumsub.getApplicantVerificationSteps');
 Route::get('/sumsub/generate-access-token', [SumSubController::class, 'generateAccessToken'])->name('sumsub.generateAcessToken');
+Route::post('/sumsub/get-verification-result', [SumSubController::class, 'getApplicantVerificationResult'])->name('sumsub.getApplicantVerificationResult');

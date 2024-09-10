@@ -25,12 +25,28 @@ class SumSubBL
 
         switch ($product) {
             case 'create_access_token':
-                $requestParams['userId'] = 'ABCDE12345HABEDI';
+                $requestParams['userId'] = 'HAPPYHAKAAYAHOOYEPEE1234567890';
                 $requestParams['levelName'] = 'basic-kyc-level';
 
                 $url .= $this->credentials->create_sdktoken_url . '?' . http_build_query($requestParams);
 
                 $signatureData = time() . strtoupper($method) . $this->credentials->create_sdktoken_url . '?' . http_build_query($requestParams);
+                break;
+
+            case 'get_applicant_data':
+                $method = 'get';
+                $requestParams['applicantId'] = $applicant_id;
+
+                $url .= $this->credentials->get_applicant_data_url . "/{$applicant_id}/one";
+                $signatureData = time() . strtoupper($method) . $this->credentials->get_applicant_data_url . "/{$applicant_id}/one";
+                break;
+
+            case 'get_applicant_verification_steps':
+                $method = 'get';
+                $requestParams['applicantId'] = $applicant_id;
+
+                $url .= $this->credentials->get_applicant_data_url . "/{$applicant_id}/requiredIdDocsStatus";
+                $signatureData = time() . strtoupper($method) . $this->credentials->get_applicant_data_url . "/{$applicant_id}/requiredIdDocsStatus";
                 break;
         }
 
@@ -61,6 +77,7 @@ class SumSubBL
         } catch (ClientException $ce) {
             $response = $ce->getResponse();
             $output = json_decode($response->getBody()->getContents());
+            info(json_encode($response));
 
             $this->response['result'] = false;
             $this->response['body'] = $output;

@@ -8,42 +8,81 @@ use Illuminate\Http\Request;
 
 class SumSubController extends Controller
 {
-    public function __construct()
+    public function __construct(protected SumSubBL $sumsubBL)
     {
     }
 
     public function index()
     {
-        $sumsubBL = new SumSubBL;
+        return view('sumsub.index');
+    }
 
+    public function run()
+    {
         // Save the access token to DB
-        $generateTokenResponse = $sumsubBL->queryAPI('create_access_token');
+        $response = $this->sumsubBL->queryAPI('create_access_token');
 
-        if (!$generateTokenResponse['result']) {
+        if (!$response['result']) {
             return redirect()
                 ->route('register')
                 ->with('error', 'Error fetching workflow data');
         }
 
-        $accessToken = $generateTokenResponse['body']->token;
+        $accessToken = $response['body']->token;
 
         return view('sumsub.register', compact('accessToken'));
     }
 
-    public function generateAccessToken(Request $request)
+    public function generateAccessToken()
     {
-        $sumsubBL = new SumSubBL;
+        $response = $this->sumsubBL->queryAPI('create_access_token');
 
-        $generateTokenResponse = $sumsubBL->queryAPI('create_access_token');
-
-        if (!$generateTokenResponse['result']) {
-            return redirect()
-                ->route('register')
-                ->with('error', 'Error fetching workflow data');
+        if (!$response['result']) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Error generating access token!'
+            ]);
         }
 
         return response()->json([
-            'token' => $generateTokenResponse['body']->token
+            'status' => 'success',
+            'token' => $response['body']->token
         ]);
+    }
+
+    public function getApplicantData()
+    {
+        $response = $this->sumsubBL->queryAPI('get_applicant_data', '66e019eed2521c08d194b70c');
+
+        if (!$response['result']) {
+            return redirect()
+                ->route('sumsub.index')
+                ->with('error', 'Error fetching applicant data');
+        }
+
+        return redirect()
+            ->route('sumsub.index')
+            ->with('success', 'Applicant fetched successfully');
+    }
+
+    public function getApplicantVerificationSteps()
+    {
+        $response = $this->sumsubBL->queryAPI('get_applicant_verification_steps', '66e019eed2521c08d194b70c');
+
+        info($response);
+        if (!$response['result']) {
+            return redirect()
+                ->route('sumsub.index')
+                ->with('error', 'Error fetching applicant verification data');
+        }
+
+        return redirect()
+            ->route('sumsub.index')
+            ->with('success', 'Applicant verification fetched successfully');
+    }
+
+    public function getApplicantVerificationResult(Request $request)
+    {
+        info($request->all());
     }
 }
